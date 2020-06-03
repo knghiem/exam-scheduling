@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Final Exam Scheduler</title>
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include the plugin's CSS and JS: -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <!-- App JS and CSS -->
+    <script src="app.js"></script>
+    <link href="app.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div id="loader-container">
+      <div id="loader"></div>
+      <h5>Processing...</h5>
+    </div>
+    <main role="main" class="container" id="main-page">
+      <h1 style="margin-top: 50px">Final Exam Scheduler</h1>
+      <br>
+      <input style="display:none" type="file" id="upload" class="fileinput" multiple/>
+      <label style="display:none" for="upload" class="btn btn-primary"><span class="fa fa-upload" style="margin-right:10px"></span>Import files</label>
+      <span style="display:none" id="num-files" style="margin-left:5px"></span>
+      <!--<span class="btn btn-primary" id="test-btn">Test</span>-->
+      <!-- Drop-down Menu -->
+      <!-- Example single danger button -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </button>
+        <div class="dropdown-menu">
+          <!-- New Schedule -->
+          <button id="new-btn" type="button" data-toggle="modal" data-target="#newScheduleModal" class="btn btn-primary dropdown-item">
+            <i class="fas fa-file-alt" style="margin-right:10px"></i>New Schedule
+          </button>
+          <!-- Add file(s) -->
+          <input type="file" id="add-btn" class="fileinput" multiple/>
+          <label for="add-btn" class="btn btn-primary dropdown-item"><span class="fa fa-plus" style="margin-right:10px"></span>Add File(s)</label>
+          <!-- Crosslist -->
+          <button type="button" class="btn btn-primary dropdown-item" id="crosslist-btn" data-toggle="modal" data-target="#crosslist-modal"><span class="fas fa-link" style="margin-right:10px"></span>Crosslist</button>
+          <div class="dropdown-divider"></div>
+          <!-- Save Current State -->
+          <button id="save-btn" type="button" class="btn btn-primary dropdown-item">
+            <span class="fa fa-download" style="margin-right:10px"></span>Save Draft
+          </button>
+          <!-- Load Previous Draft -->
+          <input type="file" id="load-btn" class="fileinput"/>
+          <label for="load-btn" class="dropdown-item"><span class="fa fa-redo" style="margin-right:10px"></span>Load Draft</label>
+           <!-- <button id="load-btn" type="button" class="btn btn-primary ">
+            <span class="fa fa-repeat" style="margin-right:10px"></span>Load Draft
+          </button> -->
+          <div class="dropdown-divider"></div>
+          <!-- Export -->
+          <button id="export-btn" type="button" class="btn btn-primary dropdown-item">
+            <span class="fa fa-file-export" style="margin-right:10px"></span>Export
+          </button>
+          <div class="dropdown-divider"></div>
+          <!-- Settings, trigger modal -->
+          <button type="button" class="btn btn-primary dropdown-item" data-toggle="modal" data-target="#settingsModal">
+            <span class="fa fa-cog" style="margin-right:10px"></span>Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- New Schedule Modal -->
+      <div class="modal fade bd-example-modal-lg" id="newScheduleModal" tabindex="-1" role="dialog" aria-labelledby="newScheduleModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newScheduleModalTitle">Create New Schedule</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-body">
+                <h5 class="card-title">General Settings</h5>
+                <form>
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                      <label for="term">Current Term</label>
+                    </div>
+                    <div class="col-sm-8">
+                      <input class="form-control" id="term" type="text" placeholder="Fall/Spring 20xx">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                      <label for="term">Creator</label>
+                    </div>
+                    <div class="col-sm-8">
+                      <input class="form-control" id="creator" type="text" placeholder="Name">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                      <label for="senior-checkbox">Senior Priority</label>
+                    </div>
+                    <div class="col-sm-8">
+                      <label class="switch">
+                        <input class="form-control" id="senior-checkbox" type="checkbox">
+                        <span class="slider round"></span>
+                      </label>
+                    </div>
+                  </div>
+                </form>
+
+                <!--Add files-->
+                <input type="file" id="new-files-btn" class="fileinput" multiple/>
+                <label for="new-files-btn" class="btn btn-primary"><span class="fa fa-upload" style="margin-right:10px"></span>Add Files</label>
+                <!--Show files-->
+                <div>
+                  <table id='filesTable' style="display:None;" rules='rows'>
+                    <tr>
+                      <th>File Name</th>
+                      <th>Course<span style="margin-left:15px; padding: 5px; cursor:pointer; border: 1px solid white; border-radius:25%" class="fa fa-sort-alpha-down" onclick='sortTable()'></span></th>
+                      <th>Section</th>
+                      <th></th>
+                    </tr>
+                    <tbody id='filesResult'>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" id="crosslist-btn2" data-dismiss="modal" data-toggle="modal" data-target="#crosslist-modal" class="btn btn-primary">Next: Link Crosslisted</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Modal -->
+      <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="settingsModalTitle">Settings</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-body">
+                <h5 class="card-title">General Settings</h5>
+                <form>
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                      <label for="term">Current Term</label>
+                    </div>
+                    <div class="col-sm-8">
+                      <input class="form-control" id="term" type="text" placeholder="Fall/Spring 20xx">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                      <label for="senior-checkbox">Senior Priority</label>
+                    </div>
+                    <div class="col-sm-8">
+                      <label class="switch">
+                        <input class="form-control" id="senior-checkbox" type="checkbox">
+                        <span class="slider round"></span>
+                      </label>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Crosslist Modal -->
+      <div class="modal fade bd-example-modal-lg" id="crosslist-modal" tabindex="-1" role="dialog" aria-labelledby="newScheduleModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Link Crosslisted Courses</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="card-body">
+                <button type="button" class="btn btn-primary" id="new-crosslist-btn"><i style="margin-right:5px;" class="fa fa-plus"></i>Add new group</button>
+                <!-- Build your select: -->
+                <div id="crosslist-container">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="generate-btn">Generate Course Cards</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm Modal -->
+      <div id="confirm-modal" class="modal fade">
+      	<div class="modal-dialog modal-confirm">
+      		<div class="modal-content">
+      			<div class="modal-header">
+      				<div class="icon-box">
+      					<i class="fa fa-times"></i>
+      				</div>
+      				<h4 class="modal-title"></h4>
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      			</div>
+      			<div class="modal-body">
+      				<p>Do you really want to delete these records? This process cannot be undone.</p>
+      			</div>
+      			<div class="modal-footer">
+      				<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+      				<button type="button" class="btn btn-danger" id="confirm-modal-yes">Delete</button>
+      			</div>
+      		</div>
+      	</div>
+      </div>
+
+      <!--Main body-->
+      <br><br>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Courses</h5>
+              <p class="card-text" id="num-course">0 course(s) to be scheduled</p>
+              <div class="dropzone" id="course-list">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-9">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Schedule</h5>
+              <div style="text-align:right; margin:-20px 0px 10px 0px">
+                <button class="btn btn-light" id="add-time-btn"><span class="fa fa-plus" style="margin-right:10px"></span>Add more time</button>
+              </div>
+              <div class="container" id="time-slot-container">
+                <div class="row time-row">
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot1">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 1</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot2">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 2</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot3">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 3</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row time-row">
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot4">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 4</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot5">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 5</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="card time" id="slot6">
+                      <div class="card-body">
+                        <h5 class="card-title time-name" contenteditable="true"><span class="fa fa-edit" contenteditable="false"></span>Time 6</h5>
+                        <div class="dropzone"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+</body>
+</html>
